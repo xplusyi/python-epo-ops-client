@@ -28,6 +28,12 @@ def test_instantiate_simple_client():
     client = Client("key", "secret")
     assert len(client.middlewares) == 1
     assert client.middlewares[0].history.db_path == sqlite.DEFAULT_DB_PATH
+    assert client.raise_for_status is True
+
+
+def test_instantiate_client_without_raise_for_status():
+    client = Client("key", "secret", raise_for_status=False)
+    assert client.raise_for_status is False
 
 
 def test_family(all_clients):
@@ -45,8 +51,10 @@ def test_family_legal(all_clients):
 def test_image(all_clients):
     assert_image_success(all_clients)
 
+
 def test_legal(all_clients):
     assert_legal_success(all_clients)
+
 
 def test_published_data(all_clients):
     assert_published_data_success(all_clients)

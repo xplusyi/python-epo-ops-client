@@ -67,9 +67,11 @@ you'll interact with mostly.
 
 When you issue a request, the response is a [requests.Response][] object. If
 `response.status_code != 200` then a `requests.HTTPError` exception will be
-raised — it's your responsibility to handle those exceptions if you want to. The
-one case that's handled is when the access token has expired: in this case, the
-client will automatically handle the HTTP 400 status and renew the token.
+raised — it's your responsibility to handle those exceptions if you want to.
+This default can be disabled by passing `raise_for_status=False` when
+constructing the client. The one case that's handled is when the access token
+has expired: in this case, the client will automatically handle the HTTP 400
+status and renew the token.
 
 Note that the Client does not attempt to interpret the data supplied by OPS, so
 it's your responsibility to parse the XML or JSON payload for your own purpose.

@@ -10,17 +10,12 @@ from requests.exceptions import HTTPError
 
 from . import exceptions
 from .middlewares import Throttler
-from .models import (
-    AccessToken,
-    Docdb,
-    Epodoc,
-    Original,
-    Request,
-)
+from .models import AccessToken, Docdb, Epodoc, Original, Request
 
 log = logging.getLogger(__name__)
 
 DEFAULT_NETWORK_TIMEOUT = 10.0
+
 
 class Client(object):
     __auth_url__ = "https://ops.epo.org/3.2/auth/accesstoken"
@@ -35,7 +30,15 @@ class Client(object):
     __register_path__ = "register"
     __register_search_path__ = "register/search"
 
-    def __init__(self, key, secret, accept_type="xml", middlewares=None, timeout=DEFAULT_NETWORK_TIMEOUT):
+    def __init__(
+        self,
+        key,
+        secret,
+        accept_type="xml",
+        middlewares=None,
+        timeout=DEFAULT_NETWORK_TIMEOUT,
+        raise_for_status=True,
+    ):
         self.accept_type = "application/{0}".format(accept_type)
         self.middlewares = middlewares
         if middlewares is None:
@@ -44,6 +47,7 @@ class Client(object):
         self.key = key
         self.secret = secret
         self.timeout = timeout
+        self.raise_for_status = raise_for_status
         self._access_token = None
 
     def family(
@@ -154,6 +158,7 @@ class Client(object):
                 input=input,
             )
         )
+
     def number(
         self,
         reference_type: str,
@@ -395,7 +400,8 @@ class Client(object):
         )
         response = self._check_for_expired_token(response)
         response = self._check_for_exceeded_quota(response)
-        response.raise_for_status()
+        if self.raise_for_status:
+            response.raise_for_status()
         return response
 
     # info: {
