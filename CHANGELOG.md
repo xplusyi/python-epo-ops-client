@@ -1,5 +1,7 @@
 # Change Log
 
+## 4.2.2 (2026-05-17)
+
 - Verify support for Python 3.14
 - Made `raise_for_status` configurable. Thanks, @ofipify.
 
